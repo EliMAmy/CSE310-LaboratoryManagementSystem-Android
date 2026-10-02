@@ -31,10 +31,13 @@ fun SearchExperimentScreen(
     modifier: Modifier = Modifier
 ) {
 
+    // Stores the text entered by the user in the search field
     var searchText by remember {
         mutableStateOf("")
     }
 
+    // Filter the experiments based on the search text
+    // ignoreCase = true allows uppercase and lowercase letters to match
     val filteredExperiments = experiments.filter {
         it.name.contains(
             searchText,
@@ -58,6 +61,7 @@ fun SearchExperimentScreen(
             modifier = Modifier.height(8.dp)
         )
 
+        // Instructions for the user
         Text(
             text = "Find an experiment by name",
             style = MaterialTheme.typography.bodyMedium
@@ -67,10 +71,11 @@ fun SearchExperimentScreen(
             modifier = Modifier.height(16.dp)
         )
 
-        // Search field
+        // Search field where the user enters an experiment name
         OutlinedTextField(
             value = searchText,
             onValueChange = {
+                // Update the search text every time the user types
                 searchText = it
             },
             label = {
@@ -87,7 +92,7 @@ fun SearchExperimentScreen(
             modifier = Modifier.height(16.dp)
         )
 
-        // Results information
+        // Show how many experiments match the search
         if (searchText.isNotBlank()) {
 
             Text(
@@ -100,8 +105,10 @@ fun SearchExperimentScreen(
             )
         }
 
+        // Check if there are any matching experiments
         if (filteredExperiments.isEmpty()) {
 
+            // Show a different message depending on the search
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -133,6 +140,7 @@ fun SearchExperimentScreen(
 
         } else {
 
+            // Display the experiments that match the search
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -140,6 +148,7 @@ fun SearchExperimentScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
+                // Create a card for each matching experiment
                 items(filteredExperiments) { experiment ->
 
                     ExperimentCard(
@@ -155,7 +164,7 @@ fun SearchExperimentScreen(
             modifier = Modifier.height(12.dp)
         )
 
-        // Back button
+        // Button to return to the previous screen
         OutlinedButton(
             onClick = onBack,
             modifier = Modifier.fillMaxWidth()

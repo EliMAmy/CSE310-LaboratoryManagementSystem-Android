@@ -27,6 +27,7 @@ import androidx.compose.ui.unit.dp
 import com.example.mylaboratorymanagementsystem.model.Experiment
 
 
+// Displays the list of all laboratory experiments
 @Composable
 fun ExperimentListScreen(
     experiments: List<Experiment>,
@@ -52,6 +53,7 @@ fun ExperimentListScreen(
             modifier = Modifier.height(8.dp)
         )
 
+        // Short description of the screen
         Text(
             text = "Manage your laboratory experiments",
             style = MaterialTheme.typography.bodyMedium
@@ -61,7 +63,7 @@ fun ExperimentListScreen(
             modifier = Modifier.height(16.dp)
         )
 
-        // Back button
+        // Button to return to the previous screen
         OutlinedButton(
             onClick = onBack
         ) {
@@ -72,8 +74,10 @@ fun ExperimentListScreen(
             modifier = Modifier.height(16.dp)
         )
 
+        // Check if there are any experiments
         if (experiments.isEmpty()) {
 
+            // Message shown when there are no experiments
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -97,6 +101,7 @@ fun ExperimentListScreen(
 
         } else {
 
+            // LazyColumn displays the experiments in a scrollable list
             LazyColumn(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -104,6 +109,7 @@ fun ExperimentListScreen(
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
 
+                // Create one card for each experiment
                 items(experiments) { experiment ->
 
                     ExperimentCard(
@@ -118,6 +124,7 @@ fun ExperimentListScreen(
 }
 
 
+// Displays the information and buttons for one experiment
 @Composable
 fun ExperimentCard(
     experiment: Experiment,
@@ -125,10 +132,12 @@ fun ExperimentCard(
     onDeleteExperiment: (Experiment) -> Unit
 ) {
 
+    // Controls whether the delete confirmation dialog is visible
     var showDeleteDialog by remember {
         mutableStateOf(false)
     }
 
+    // Card contains all the information for one experiment
     Card(
         modifier = Modifier.fillMaxWidth()
     ) {
@@ -138,7 +147,7 @@ fun ExperimentCard(
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
 
-            // Experiment name
+            // Display the experiment name
             Text(
                 text = experiment.name,
                 style = MaterialTheme.typography.titleLarge
@@ -148,7 +157,7 @@ fun ExperimentCard(
                 modifier = Modifier.height(4.dp)
             )
 
-            // Experiment information
+            // Display the experiment information
             Text(
                 text = "Description: ${experiment.description}",
                 style = MaterialTheme.typography.bodyMedium
@@ -183,12 +192,14 @@ fun ExperimentCard(
                 modifier = Modifier.height(8.dp)
             )
 
-            // Buttons
+            // Row contains the Edit and Delete buttons
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
 
+                // Edit button sends the selected experiment
+                // to the edit screen
                 Button(
                     onClick = {
                         onEditExperiment(experiment)
@@ -198,6 +209,7 @@ fun ExperimentCard(
                     Text("Edit")
                 }
 
+                // Delete button opens a confirmation dialog
                 OutlinedButton(
                     onClick = {
                         showDeleteDialog = true
@@ -210,18 +222,21 @@ fun ExperimentCard(
         }
     }
 
-    // Delete confirmation dialog
+    // Show the confirmation dialog when the user clicks Delete
     if (showDeleteDialog) {
 
         AlertDialog(
+            // Close the dialog when the user dismisses it
             onDismissRequest = {
                 showDeleteDialog = false
             },
 
+            // Dialog title
             title = {
                 Text("Delete Experiment")
             },
 
+            // Ask the user to confirm the deletion
             text = {
                 Text(
                     "Are you sure you want to delete " +
@@ -229,12 +244,15 @@ fun ExperimentCard(
                 )
             },
 
+            // Delete button inside the dialog
             confirmButton = {
                 TextButton(
                     onClick = {
 
+                        // Delete the selected experiment
                         onDeleteExperiment(experiment)
 
+                        // Close the dialog
                         showDeleteDialog = false
                     }
                 ) {
@@ -242,6 +260,7 @@ fun ExperimentCard(
                 }
             },
 
+            // Cancel button inside the dialog
             dismissButton = {
                 TextButton(
                     onClick = {

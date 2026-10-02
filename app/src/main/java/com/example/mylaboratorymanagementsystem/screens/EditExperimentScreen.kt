@@ -31,6 +31,7 @@ fun EditExperimentScreen(
     modifier: Modifier = Modifier
 ) {
 
+    // Store the existing experiment information in editable fields
     var name by remember {
         mutableStateOf(experiment.name)
     }
@@ -55,10 +56,12 @@ fun EditExperimentScreen(
         mutableStateOf(experiment.treatmentTime.toString())
     }
 
+    // Convert the results list into text so it can be edited
     var results by remember {
         mutableStateOf(experiment.results.joinToString(", "))
     }
 
+    // Stores an error message if the entered information is invalid
     var errorMessage by remember {
         mutableStateOf("")
     }
@@ -69,10 +72,11 @@ fun EditExperimentScreen(
             .verticalScroll(rememberScrollState())
             .padding(24.dp),
 
+        // Adds space between the elements
         verticalArrangement = Arrangement.spacedBy(12.dp)
     ) {
 
-        // Back button
+        // Button to return to the previous screen
         OutlinedButton(
             onClick = onBack
         ) {
@@ -85,6 +89,7 @@ fun EditExperimentScreen(
             style = MaterialTheme.typography.headlineMedium
         )
 
+        // Instructions for the user
         Text(
             text = "Update the experiment information below.",
             style = MaterialTheme.typography.bodyMedium
@@ -94,7 +99,7 @@ fun EditExperimentScreen(
             modifier = Modifier.height(8.dp)
         )
 
-        // Experiment name
+        // Field for editing the experiment name
         OutlinedTextField(
             value = name,
             onValueChange = {
@@ -108,7 +113,7 @@ fun EditExperimentScreen(
             singleLine = true
         )
 
-        // Description
+        // Field for editing the description
         OutlinedTextField(
             value = description,
             onValueChange = {
@@ -121,7 +126,7 @@ fun EditExperimentScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Date
+        // Field for editing the date
         OutlinedTextField(
             value = date,
             onValueChange = {
@@ -135,7 +140,7 @@ fun EditExperimentScreen(
             singleLine = true
         )
 
-        // Temperature
+        // Field for editing the temperature
         OutlinedTextField(
             value = temperature,
             onValueChange = {
@@ -149,7 +154,7 @@ fun EditExperimentScreen(
             singleLine = true
         )
 
-        // pH
+        // Field for editing the pH value
         OutlinedTextField(
             value = pH,
             onValueChange = {
@@ -163,7 +168,7 @@ fun EditExperimentScreen(
             singleLine = true
         )
 
-        // Treatment time
+        // Field for editing the treatment time
         OutlinedTextField(
             value = treatmentTime,
             onValueChange = {
@@ -177,7 +182,7 @@ fun EditExperimentScreen(
             singleLine = true
         )
 
-        // Results
+        // Field for editing the experiment results
         OutlinedTextField(
             value = results,
             onValueChange = {
@@ -190,7 +195,7 @@ fun EditExperimentScreen(
             modifier = Modifier.fillMaxWidth()
         )
 
-        // Error message
+        // Display an error message when the information is invalid
         if (errorMessage.isNotEmpty()) {
 
             Text(
@@ -204,10 +209,11 @@ fun EditExperimentScreen(
             modifier = Modifier.height(8.dp)
         )
 
-        // Save button
+        // Save button validates the data and updates the experiment
         Button(
             onClick = {
 
+                // Convert the text fields into numbers
                 val temperatureValue =
                     temperature.toDoubleOrNull()
 
@@ -217,6 +223,7 @@ fun EditExperimentScreen(
                 val treatmentTimeValue =
                     treatmentTime.toDoubleOrNull()
 
+                // Check that all required information is valid
                 when {
 
                     name.isBlank() -> {
@@ -244,11 +251,11 @@ fun EditExperimentScreen(
                             "Please enter a valid pH value."
                     }
 
+                    // Check that the pH is between 0 and 14
                     pHValue !in 0.0..14.0 -> {
                         errorMessage =
                             "pH must be between 0 and 14."
                     }
-
 
                     treatmentTimeValue == null -> {
                         errorMessage =
@@ -262,7 +269,9 @@ fun EditExperimentScreen(
 
                     else -> {
 
+                        // Here we create an updated experiment using the new values
                         val updatedExperiment = Experiment(
+                            // Keep the original ID so the correct experiment is updated
                             id = experiment.id,
                             name = name.trim(),
                             description = description.trim(),
@@ -270,12 +279,15 @@ fun EditExperimentScreen(
                             temperature = temperatureValue,
                             pH = pHValue,
                             treatmentTime = treatmentTimeValue,
+
+                            // Convert the comma-separated text back into a list
                             results = results
                                 .split(",")
                                 .map { it.trim() }
                                 .filter { it.isNotEmpty() }
                         )
 
+                        // Send the updated experiment to the parent screen
                         onExperimentUpdated(updatedExperiment)
                     }
                 }
